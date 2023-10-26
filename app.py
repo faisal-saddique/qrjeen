@@ -40,7 +40,7 @@ if st.button("Run Analysis", use_container_width=True):
                 result = process_pdf_report(file_content,file.name,res_box)
 
             elif file_extension == 'DOCX':
-                result = process_docx_report(file_content,file.name)
+                result = process_docx_report(file_content,file.name,res_box)
             else:
                 result = None
                 raise ValueError("File type not supported!")

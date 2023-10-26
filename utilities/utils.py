@@ -118,7 +118,7 @@ documents."""
             # result = result.replace("\n", "")       
             container.markdown(result)
 
-def process_docx_report(content, filename):
+def process_docx_report(content, filename, container):
     # Assuming the content is in bytes format, save it temporarily
     with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as temp_file:
         temp_file.write(content)
@@ -127,10 +127,10 @@ def process_docx_report(content, filename):
     loader = Docx2txtLoader(file_path=temp_file_path)
     data = loader.load()
     # data = [re.sub(r"\n\s*\n", "\n\n", obj.page_content) for obj in data]
-    for d in data:
-        d.page_content = re.sub(r"\n\s*\n", "\n\n", d.page_content)
-        d.metadata["source"] = filename
-    return data
+    # for d in data:
+    #     d.page_content = re.sub(r"\n\s*\n", "\n\n", d.page_content)
+    #     d.metadata["source"] = filename
+    return process_content_and_get_gpt_response("\n\n".join([doc.page_content for doc in data]),container=container)
 
 
 def num_tokens_from_string(chunked_docs: List[Document]) -> int:
