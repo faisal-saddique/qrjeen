@@ -15,6 +15,13 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def process_content_and_get_gpt_response(content, container):
+
+    tokens = num_tokens_from_string(content)
+
+    if tokens > 9500:
+        # Consider the first 7500 tokens of content
+        content = content[:7500]
+        
     SYSTEM_PROMPT = """You are an Investment Banker tasked with the responsibility of analyzing a set of merged investment
 documents. These documents cover various investment strategies, supported by performance metrics.
 Your objective is to analyze these documents and subsequently formulate questions that can be directed
@@ -65,27 +72,6 @@ robustness, and sustainability of these strategies. Aim to formulate questions t
 partner to validate or reconsider the assumptions, methodologies, and outcomes discussed in the
 documents."""
 
-    # response = openai.ChatCompletion.create(
-    #     model="gpt-3.5-turbo-16k",
-    #     messages=[
-    #         {
-    #             "role": "system",
-    #             "content": SYSTEM_PROMPT
-    #         },
-    #         {
-    #             "role": "user",
-    #             "content": content
-    #         }
-    #     ],
-    #     temperature=1,
-    #     max_tokens=9500,
-    #     top_p=1,
-    #     frequency_penalty=0,
-    #     presence_penalty=0
-    # )
-
-    # return response["choices"][0]["message"]["content"].strip()
-
     report = []
     for resp in openai.ChatCompletion.create(
         model="gpt-3.5-turbo-16k",
@@ -131,7 +117,6 @@ def process_docx_report(content, filename, container):
     #     d.page_content = re.sub(r"\n\s*\n", "\n\n", d.page_content)
     #     d.metadata["source"] = filename
     return process_content_and_get_gpt_response("\n\n".join([doc.page_content for doc in data]),container=container)
-
 
 def num_tokens_from_string(chunked_docs: List[Document]) -> int:
 
