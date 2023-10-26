@@ -1,4 +1,5 @@
 openai
+langchain
 pymupdf
 docx2txt
 tiktoken
