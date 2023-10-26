@@ -2,4 +2,4 @@ openai
 pymupdf
 docx2txt
 tiktoken
-dotenv-python
+python-dotenv
