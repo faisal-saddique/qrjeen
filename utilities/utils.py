@@ -18,10 +18,10 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def process_content_and_get_gpt_response(content, container):
 
     tokens = num_tokens_from_string(content)
-    st.info(f"No. of Tokens in file: {tokens}")
+    container.info(f"No. of Tokens in file: {tokens}")
     if tokens > 9500:
         # Consider the first 7500 tokens of content
-        st.info("Chunking to put it under the limit.")
+        container.info("Chunking to put it under the limit.")
         content = content[:7500]
         
     SYSTEM_PROMPT = """You are an Investment Banker tasked with the responsibility of analyzing a set of merged investment
