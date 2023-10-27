@@ -8,6 +8,7 @@ import re
 from langchain.docstore.document import Document
 from dotenv import load_dotenv
 import os
+import streamlit as st
 
 # Load environment variables from .env file
 load_dotenv()
@@ -17,9 +18,10 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 def process_content_and_get_gpt_response(content, container):
 
     tokens = num_tokens_from_string(content)
-
+    st.info(f"No. of Tokens in file: {tokens}")
     if tokens > 9500:
         # Consider the first 7500 tokens of content
+        st.info("Chunking to put it under the limit.")
         content = content[:7500]
         
     SYSTEM_PROMPT = """You are an Investment Banker tasked with the responsibility of analyzing a set of merged investment
@@ -118,16 +120,11 @@ def process_docx_report(content, filename, container):
     #     d.metadata["source"] = filename
     return process_content_and_get_gpt_response("\n\n".join([doc.page_content for doc in data]),container=container)
 
-def num_tokens_from_string(chunked_docs: List[Document]) -> int:
-
-    string = ""
-    print(f"Number of vectors: \n{len(chunked_docs)}")
-    for doc in chunked_docs:
-        string += doc.page_content
+def num_tokens_from_string(content: str) -> int:
 
     """Returns the number of tokens in a text string."""
     encoding = tiktoken.get_encoding("cl100k_base")
-    num_tokens = len(encoding.encode(string))
+    num_tokens = len(encoding.encode(content))
     return num_tokens
 
 
